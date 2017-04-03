@@ -1,0 +1,34 @@
+from math import sqrt
+
+def getPooled(asuc, an, bsuc, bn):
+  return (asuc+bsuc)/(an + bn)
+
+def getPooledDev(asuc, an, bsuc, bn):
+  p = round(getPooled(asuc, an, bsuc, bn), 4) 
+  q = 1-p
+  return round(sqrt(p*q/an + p*q/bn), 3)
+  
+def getConfInterval(confLevel, se, mean):
+  z = 0
+  if confLevel == .95:
+    z = 1.96
+  return (round(mean - z * se, 3), round(mean + z * se, 3))
+  
+def getTestStatistic(y, m, se):
+  return round((y - m)/se, 2)
+
+def main():
+  asuc = 413.0
+  an = 718.0
+  bsuc = 97.0
+  bn = 140.0
+  
+  pa = round(asuc/an, 3)
+  pb = round(bsuc/bn, 3) 
+  
+  pooledDev = getPooledDev(asuc, an, bsuc, bn)
+  print("ConfInterval:", getConfInterval(.95, pooledDev, pb - pa))
+  print("Z:", getTestStatistic(pa-pb, 0, pooledDev))
+  
+if __name__ == "__main__":
+  main()
