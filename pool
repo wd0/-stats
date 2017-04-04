@@ -5,30 +5,41 @@ def getPooled(asuc, an, bsuc, bn):
 
 def getPooledDev(asuc, an, bsuc, bn):
   p = round(getPooled(asuc, an, bsuc, bn), 4) 
-  q = 1-p
+  print("p:",p)
+  q = 1-p 
+  print("q:",q)
+  print("pq:", p*q)
+
   return round(sqrt(p*q/an + p*q/bn), 3)
   
 def getConfInterval(confLevel, se, mean):
   z = 0
   if confLevel == .95:
     z = 1.96
+  if confLevel == .99:
+    z = 2.575
   return (round(mean - z * se, 3), round(mean + z * se, 3))
   
 def getTestStatistic(y, m, se):
   return round((y - m)/se, 2)
 
 def main():
-  asuc = 413.0
-  an = 718.0
-  bsuc = 97.0
-  bn = 140.0
+  asuc = 47.0
+  an = 222.
+  bsuc = 37.0
+  bn = 208.0
   
   pa = round(asuc/an, 3)
   pb = round(bsuc/bn, 3) 
   
   pooledDev = getPooledDev(asuc, an, bsuc, bn)
-  print("ConfInterval:", getConfInterval(.95, pooledDev, pb - pa))
+  print("Pooled ratio: ")
+  print("PooledDev:", pooledDev)
+  print("Proportions:", pa, ",", pb)
+  print("ConfInterval:", getConfInterval(.99, pooledDev, pb - pa))
   print("Z:", getTestStatistic(pa-pb, 0, pooledDev))
   
 if __name__ == "__main__":
   main()
+  
+main()
