@@ -39,23 +39,20 @@ getConfInterval confLevel mean s n = (mean - errMargin, mean + errMargin)
   
 getT y mean se = (y - mean)/se
         
-getDF as an bs bn = numer/denom
-  where arat = (as^2/an)^2
-        brat = (bs^2/bn)^2
+getDF as an bs bn = truncate $ numer/denom
+  where arat = (as^2/an)
+        brat = (bs^2/bn)
         numer = (^2) $ arat + brat 
-        denom = 1/(an - 1)*arat + 1/(bn - 1)*brat 
+        denom = arat^2/(an - 1) + brat^2/(bn - 1) 
 
 main = do
-  let asuc = rnd 0 $ 0.33 * 889
-      an = 889
-      bsuc = rnd 0 $ 0.41 * 815 
-      bn = 815
-      ap = asuc/an
-      bp = bsuc/bn
-      se = getPairPropSE ap an bp bn
-      pool = getPooled asuc an bsuc bn
-      poolSE = getPooledSE pool an bn
-  printLn $ getMean [1, 2]
-  printLn $ getS [1,2]
-
-  
+  let ay = 2.48
+      as = 1.68
+      an = 104
+      by = 4.43
+      bs = 1.59
+      bn = 99
+  let t = getT ay by (getSE as an bs bn)
+  let df = getDF as an bs bn
+  printLn $ t
+  printLn $ df
