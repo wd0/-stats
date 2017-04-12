@@ -29,6 +29,7 @@ getCritZ z
   | z == 0.90 = 1.645
   | z == 0.95 = 1.96
   | z == 0.99 = 2.575
+  | otherwise = z
   
 getPropConfInterval confLevel ap bp se = (mean - errMargin, mean + errMargin)
   where mean = ap - bp 
@@ -37,22 +38,30 @@ getPropConfInterval confLevel ap bp se = (mean - errMargin, mean + errMargin)
 getConfInterval confLevel mean s n = (mean - errMargin, mean + errMargin)
   where errMargin = (getCritZ confLevel) * (getSD s n)
   
-getT y mean se = (y - mean)/se
+getT ay by se = (ay - by)/se
         
 getDF as an bs bn = truncate $ numer/denom
   where arat = (as^2/an)
         brat = (bs^2/bn)
         numer = (^2) $ arat + brat 
         denom = arat^2/(an - 1) + brat^2/(bn - 1) 
+        
+dunnoT mean tdf se = (mean - errMargin, mean + errMargin)
+  where errMargin = tdf * se
 
 main = do
-  let ay = 2.48
-      as = 1.68
-      an = 104
-      by = 4.43
-      bs = 1.59
-      bn = 99
+  let an = 17
+      ay = 8.92
+      as = 3.45
+      bn = 25
+      by = 12.19
+      bs = 3.68
   let t = getT ay by (getSE as an bs bn)
   let df = getDF as an bs bn
-  printLn $ t
+  printLn $ getSE as an bs bn
+  printLn $ rnd 2 t
   printLn $ df
+  printLn $ dunnoT (ay - by) 2.70118130 (getSE as an bs bn)
+
+  
+  
